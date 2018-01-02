@@ -9,8 +9,6 @@ const app = express();
 
 require("dotenv").load();
 
-
-
 // Body Parser Middleware
 app.use(bodyParser.json());
 
@@ -25,7 +23,6 @@ app.use(function (req, res, next) {
     );
     next();
 });
-
 
 
 const modbusClient = require("./client.js");
@@ -72,7 +69,7 @@ let numInputs = 8 * numCards - 1;
 const modbusCtrl = require("./ctrl/modbusCtrl.js");
 
 app.get("/api/getAllInputStatus", modbusCtrl.getAllInputStatus);
-app.get("/api/getOneInputStatus", modbusCtrl.getOneInputStatus);
+app.post("/api/postOpenLock", modbusCtrl.postOpenLock);
 
 
 

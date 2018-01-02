@@ -6,17 +6,16 @@ const numCards = 3;
 let numInputs = 8 * numCards - 1;
 
 module.exports = {
-    // create a modbus client
-    client: modbus.client.tcp.complete({
-        host: host,
-        port: port,
-        autoReconnect: true,
-        reconnectTimeout: 1000,
-        timeout: 5000,
-        unitId: 0
-    })
-}
-
+  // create a modbus client
+  client: modbus.client.tcp.complete({
+    host: host,
+    port: port,
+    autoReconnect: true,
+    reconnectTimeout: 1000,
+    timeout: 5000,
+    unitId: 0
+  })
+};
 
 // // create a modbus client
 // var client = modbus.client.tcp.complete({
