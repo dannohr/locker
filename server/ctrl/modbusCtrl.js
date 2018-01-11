@@ -1,5 +1,5 @@
 // _____  API ______ //
-const modbusClient = require("../client.js");
+const modbusClient = require("../modbusClient.js");
 const numCards = 3;
 
 let numInputs = 8 * numCards - 1;
