@@ -1,9 +1,16 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+// import { connect } from "react-redux";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import MyComponent from './Mycomponent';
-import Keyboard from './Keyboard';
+
+import './App.css';
+import logo from './logo.svg';
+
+import MyComponent from './components/Mycomponent';
+import Keyboard from './components/Keyboard';
+import WalkupScreen from './components/WalkupScreen';
+
+
 
 class App extends Component {
   state = {
@@ -11,12 +18,12 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.callApi()
+    this.isLockerSystemConnected()
       .then(res => this.setState({ response: res.express }))
       .catch(err => console.log(err));
   }
 
-  callApi = async () => {
+  isLockerSystemConnected = async () => {
     const response = await fetch('/api/hello');
     const body = await response.json();
 
@@ -29,14 +36,16 @@ class App extends Component {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome</h1>
+          
+          <h1 className="App-title">Welcome to the system</h1>
         </header>
         <p className="App-intro">{this.state.response}</p>
         <MuiThemeProvider>
-          <MyComponent />
+         
+          <WalkupScreen />
         </MuiThemeProvider>
-        <Keyboard />
+        
+
       </div>
     );
   }
