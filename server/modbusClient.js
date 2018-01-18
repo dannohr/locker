@@ -1,5 +1,5 @@
 const modbus = require("jsmodbus");
-const host = "10.2.5.35";
+const host = "10.0.0.10";
 const port = 502;
 const numCards = 3;
 

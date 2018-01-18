@@ -1,6 +1,12 @@
 // _____  API ______ //
 const modbusClient = require("../modbusClient.js");
 const numCards = 3;
+let lockAction = {
+  error: false,
+  locksToOpen: null,
+  lockAction: null,
+  lockOpenStatus: []
+};
 
 let numInputs = 8 * numCards - 1;
 
@@ -22,53 +28,87 @@ module.exports = {
       });
   },
 
-  postOpenLock: (req, res, next) => {}
-  //   let lockAction = {
-  //     error: false,
-  //     locksToOpen: req.body.locks,
-  //     lockAction: req.body.action,
-  //     lockOpenStatus: []
-  //   };
+  postOpenLock: (req, res, next) => {
 
-  //   var lockOpen = JSON.parse(req.body.action);
+    let lockNumber = req.body.locks[0];
 
-  //   modbusClient.client
-  //     .connect()
-  //     .on("error", function(err) {
-  //       //Show error as API response
-  //       res.json(err);
-  //     })
-  //     .on("connect", function() {
-  //       console.log("Opening Lock Number: ", req.body.locks[0]);
+    modbusClient.client
+      .connect()
+      .on("error", function(err) {
+        //Show error as API response
+        res.json(err);
+      })
 
-  //       let lockNumber = req.body.locks[0];
-  //       let didDoorOpen = false;
-  //       let doorCounter = 0;
+        modbusClient.client.writeSingleCoil(lockNumber, false).then(function (resp) {
 
-  //       modbusClient.client
-  //         .writeSingleCoil(lockNumber, lockOpen)
-  //         .then(function(resp) {
-  //           console.log("Tried to open door", lockNumber, resp);
-  //           modbusClient.client
-  //             .readDiscreteInputs(0, numInputs)
-  //             .then(function(resp) {
-  //               console
-  //                 .log("Lock", lockNumber, "open?", resp.coils[lockNumber])
+            console.log(resp);
+            modbusClient.client.close();
+            res.json(resp);
 
-  //                 .then(function(resp) {
-  //                   res.json(lockAction);
-  //                   modbusClient.client.close();
-  //                 });
+        }, console.error);
+     
 
-  //               //modbusClient.client.close();
-  //             });
-  //         }, console.error)
+  modbusClient.client.connect()
 
-  //         .finally(function() {
-  //           //   console.log("Connection Closed");
-  //           // res.json(lockAction);
-  //           // modbusClient.client.close();
-  //         });
-  //     });
-  // }
+
+
+
+    // modbusClient.client.close();
+    // console.log('Headers Start')
+    // console.log(res.headers)
+    // console.log('Headers End')
+    // console.log('Locks to Open Are:')
+    // console.log(req.body.locks)
+    // // lockNumber = null;
+    // lockAction = {
+    //   error: false,
+    //   locksToOpen: null,
+    //   lockOpen: null,
+    //   lockAction: null,
+    //   lockOpenStatus: []
+    // };
+
+    // lockAction.lockOpen = JSON.parse(req.body.action);
+
+    // let lockNumber = req.body.locks[0];
+    // let didDoorOpen = false;
+    // let doorCounter = 0;
+
+    // modbusClient.client
+    //   // .connect()
+    //   .on("error", function(err) {
+    //     //Show error as API response
+    //     res.json(err);
+    //   })
+
+    //   modbusClient.client
+    //   .on("connect", function() {
+    //     console.log("Opening Lock Number: ", req.body.locks[0]+1);
+
+    //     // modbusClient.client
+    //       modbusClient.client.writeSingleCoil(req.body.locks[0], lockAction.lockOpen)
+    //       .then(function(resp) {
+    //         console.log("Tried to open door", req.body.locks[0], resp);
+    //         // modbusClient.client
+    //         //   .readDiscreteInputs(0, numInputs)
+    //         //   .then(function(resp) {
+    //         //     console.log("Lock", lockNumber, "open?", resp.coils[lockNumber])
+    //         //       // .then(function(resp) {
+    //         //       //   res.json(lockAction);
+    //         //       //   modbusClient.client.close();
+    //         //       // });
+
+    //         //     modbusClient.client.close();
+    //         //   });
+    //       }, console.error)
+
+    //       .finally(function() {
+    //           console.log("Connection Closed");
+    //           modbusClient.client.close();
+    //           res.json(lockAction);
+    //       });
+    //   });
+
+    //   modbusClient.client.connect()
+  }
 };

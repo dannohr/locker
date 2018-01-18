@@ -17,6 +17,7 @@
     "dotenv": "^4.0.0",
     "express": "^4.16.2",
     "jsmodbus": "^2.4.0",
+    "modbus-serial": "^7.0.3",
     "sqlite3": "^3.1.13"
   },
   "devDependencies": {
