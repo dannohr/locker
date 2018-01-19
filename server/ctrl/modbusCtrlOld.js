@@ -29,29 +29,20 @@ module.exports = {
   },
 
   postOpenLock: (req, res, next) => {
-
     let lockNumber = req.body.locks[0];
 
-    modbusClient.client
-      .connect()
-      .on("error", function(err) {
-        //Show error as API response
-        res.json(err);
-      })
+    modbusClient.client.connect().on("error", function(err) {
+      //Show error as API response
+      res.json(err);
+    });
 
-        modbusClient.client.writeSingleCoil(lockNumber, false).then(function (resp) {
+    modbusClient.client.writeSingleCoil(lockNumber, false).then(function(resp) {
+      console.log(resp);
+      modbusClient.client.close();
+      res.json(resp);
+    }, console.error);
 
-            console.log(resp);
-            modbusClient.client.close();
-            res.json(resp);
-
-        }, console.error);
-     
-
-  modbusClient.client.connect()
-
-
-
+    modbusClient.client.connect();
 
     // modbusClient.client.close();
     // console.log('Headers Start')

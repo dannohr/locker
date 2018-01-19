@@ -2,29 +2,39 @@
 var ModbusRTU = require("modbus-serial");
 var client = new ModbusRTU();
 
-// open connection modbus device
-client
-  .connectTCP("10.0.0.10", { port: 502 })
-  .then(setClient)
-  .then(function() {
-    console.log("Connected");
-  })
-  .catch(function(e) {
-    console.log(e.message);
-  });
+module.exports = {
+  getAllInputStatus: (req, res, next) => {
+    console.log("isOpen:", client.isOpen);
+    console.log("getting status of all inputs");
+    openDoor().then(function(resp) {
+      res.json({
+        error: false,
+        inputs: resp.coils
+      });
+    });
+  },
+
+  postOpenLock: (req, res, next) => {
+    console.log("getting status of all inputs");
+
+    connect();
+  }
+};
 
 function setClient() {
   // set the client's unit id
   // set a timout for requests default is null (no timeout)
   client.setID(1);
-  client.setTimeout(500);
-
-  openDoor();
+  client.setTimeout(100);
 }
 
 function openDoor() {
   num = 8;
-  clearAllOutputs()
+
+  connect()
+    .then(function() {
+      return clearAllOutputs();
+    })
     .then(function() {
       return turnOn(num);
     })
@@ -34,13 +44,31 @@ function openDoor() {
     .then(function() {
       return checkInputs(num);
     })
-    .then(function() {
-      return close();
-    })
+    // .then(function() {
+    //   return close();
+    // })
     .catch(function(e) {
       console.log(e.message);
     });
 }
+
+var connect = function() {
+  var promise = new Promise(function(resolve, reject) {
+    client.isOpen = null; //not sure why this is necessary, but seems to be
+    client
+      .connectTCP("10.0.0.10", { port: 502 })
+      .then(setClient)
+      .then(function() {
+        console.log("Connected");
+        resolve(true);
+      })
+      .catch(function(e) {
+        console.log(e.message);
+      });
+    // }
+  });
+  return promise;
+};
 
 var turnOn = function(num) {
   var promise = new Promise(function(resolve, reject) {
