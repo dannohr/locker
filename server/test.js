@@ -24,7 +24,7 @@ var thirdMethod = function(someStuff) {
   var promise = new Promise(function(resolve, reject) {
     setTimeout(function() {
       console.log("third method completed");
-      resolve({ result: someStuff.newData });
+      resolve({ result: someStuff });
       console.log(someStuff);
     }, 3000);
   });

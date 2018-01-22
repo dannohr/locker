@@ -2,54 +2,53 @@
 var ModbusRTU = require("modbus-serial");
 var client = new ModbusRTU();
 
+var actionLog = {
+  lockNum: null,
+  onState: "",
+  offState: ""
+};
+
 module.exports = {
-  getAllInputStatus: (req, res, next) => {
-    console.log("isOpen:", client.isOpen);
-    console.log("getting status of all inputs");
-    openDoor().then(function(resp) {
-      res.json({
-        error: false,
-        inputs: resp.coils
-      });
-    });
-  },
+  getAllInputStatus: (req, res, next) => {},
 
   postOpenLock: (req, res, next) => {
-    console.log("getting status of all inputs");
+    console.log("--- Start of Lock Open Sequence ---");
+    actionLog = {
+      lockNum: req.body.lock,
+      onState: "",
+      offState: ""
+    };
 
-    connect();
+    openDoor(actionLog).then(response => {
+      console.log(response);
+      //res.status(201).json("hi");
+    });
   }
 };
 
-function setClient() {
-  // set the client's unit id
-  // set a timout for requests default is null (no timeout)
-  client.setID(1);
-  client.setTimeout(100);
-}
+function openDoor(actionLog) {
+  console.log("Opening Door Number", actionLog.lockNum);
 
-function openDoor() {
-  num = 8;
-
-  connect()
-    .then(function() {
-      return clearAllOutputs();
-    })
-    .then(function() {
-      return turnOn(num);
-    })
-    .then(function() {
-      return turnOff(num);
-    })
-    .then(function() {
-      return checkInputs(num);
-    })
-    // .then(function() {
-    //   return close();
-    // })
-    .catch(function(e) {
-      console.log(e.message);
-    });
+  var promise = new Promise(function(resolve, reject) {
+    connect()
+      .then(function() {
+        return clearAllOutputs();
+      })
+      .then(function() {
+        return turnOn(actionLog);
+      })
+      .then(function() {
+        return turnOff(actionLog);
+      })
+      .then(function() {
+        console.log("The end:", actionLog);
+        return checkInputs(actionLog);
+      })
+      .catch(function(e) {
+        console.log(e.message);
+      });
+  });
+  return promise;
 }
 
 var connect = function() {
@@ -59,33 +58,49 @@ var connect = function() {
       .connectTCP("10.0.0.10", { port: 502 })
       .then(setClient)
       .then(function() {
-        console.log("Connected");
         resolve(true);
       })
       .catch(function(e) {
         console.log(e.message);
+        resolve(e);
       });
     // }
   });
   return promise;
 };
 
-var turnOn = function(num) {
+function setClient() {
+  // set the client's unit id
+  // set a timout for requests default is null (no timeout)
+  client.setID(1);
+  client.setTimeout(100);
+}
+
+var turnOn = function(actionLog) {
   var promise = new Promise(function(resolve, reject) {
-    client.writeCoil(num, true).then(function(result) {
+    client.writeCoil(actionLog.lockNum, true).then(function(result) {
       console.log("Send Signal to Open Door", result);
-      resolve(result.address);
+      // resolve(result.address);
+      resolve({
+        lockNum: actionLog.lockNum,
+        onState: result,
+        offState: ""
+      });
     });
   });
   return promise;
 };
 
-var turnOff = function(num) {
+var turnOff = function(actionLog) {
   var promise = new Promise(function(resolve, reject) {
     setTimeout(function() {
-      client.writeCoil(num, false).then(function(result) {
-        console.log("Send Signal to Open Door", result);
-        resolve(result);
+      client.writeCoil(actionLog.lockNum, false).then(function(result) {
+        console.log("Stop Lock Open Signal", result);
+        resolve({
+          lockNum: actionLog.lockNum,
+
+          offState: result
+        });
       });
     }, 50);
   });
