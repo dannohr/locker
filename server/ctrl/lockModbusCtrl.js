@@ -2,10 +2,13 @@
 var ModbusRTU = require("modbus-serial");
 var client = new ModbusRTU();
 
+//
 var actionLog = {
-  lockNum: null,
-  onState: "",
-  offState: ""
+  lockNum: 8,
+  connect: true,
+  clearAll: true,
+  onResult: { num: 8, status: true },
+  offResult: { num: 8, status: false }
 };
 
 module.exports = {
@@ -13,21 +16,16 @@ module.exports = {
 
   postOpenLock: (req, res, next) => {
     console.log("--- Start of Lock Open Sequence ---");
-    actionLog = {
-      lockNum: req.body.lock,
-      onState: "",
-      offState: ""
-    };
 
-    openDoor(actionLog).then(response => {
+    openDoor(req.body.lock[0]).then(response => {
       console.log(response);
       //res.status(201).json("hi");
     });
   }
 };
 
-function openDoor(actionLog) {
-  console.log("Opening Door Number", actionLog.lockNum);
+function openDoor(num) {
+  console.log("Opening Door Number", num);
 
   var promise = new Promise(function(resolve, reject) {
     connect()
@@ -35,14 +33,14 @@ function openDoor(actionLog) {
         return clearAllOutputs();
       })
       .then(function() {
-        return turnOn(actionLog);
+        return turnOn(num);
       })
       .then(function() {
-        return turnOff(actionLog);
+        return turnOff(num);
       })
       .then(function() {
-        console.log("The end:", actionLog);
-        return checkInputs(actionLog);
+        console.log("The end:", actionLog); //no bueno
+        return checkInputs(num);
       })
       .catch(function(e) {
         console.log(e.message);
@@ -51,9 +49,14 @@ function openDoor(actionLog) {
   return promise;
 }
 
+//Connect to the Modbus Device
 var connect = function() {
   var promise = new Promise(function(resolve, reject) {
-    client.isOpen = null; //not sure why this is necessary, but seems to be
+    // not sure why this is necessary, but seems to be, I think the close
+    // connection isn't working right and unless I set this to null it thinks
+    //it's still connected.
+    client.isOpen = null;
+
     client
       .connectTCP("10.0.0.10", { port: 502 })
       .then(setClient)
@@ -64,7 +67,6 @@ var connect = function() {
         console.log(e.message);
         resolve(e);
       });
-    // }
   });
   return promise;
 };
@@ -72,41 +74,36 @@ var connect = function() {
 function setClient() {
   // set the client's unit id
   // set a timout for requests default is null (no timeout)
+  // Taken from modbus-serial documentation
   client.setID(1);
   client.setTimeout(100);
 }
 
-var turnOn = function(actionLog) {
+var turnOn = function(num) {
   var promise = new Promise(function(resolve, reject) {
-    client.writeCoil(actionLog.lockNum, true).then(function(result) {
+    client.writeCoil(num, true).then(function(result) {
       console.log("Send Signal to Open Door", result);
-      // resolve(result.address);
-      resolve({
-        lockNum: actionLog.lockNum,
-        onState: result,
-        offState: ""
-      });
+      // Results above shows on the console, but the resolve() doesn't work right
+      resolve(result.address);
     });
   });
   return promise;
 };
 
-var turnOff = function(actionLog) {
+var turnOff = function(num) {
   var promise = new Promise(function(resolve, reject) {
     setTimeout(function() {
-      client.writeCoil(actionLog.lockNum, false).then(function(result) {
+      client.writeCoil(num, false).then(function(result) {
         console.log("Stop Lock Open Signal", result);
-        resolve({
-          lockNum: actionLog.lockNum,
-
-          offState: result
-        });
+        resolve(result);
       });
     }, 50);
   });
   return promise;
 };
 
+// This returns the status of all inputs in an array.  Door open will be true
+// Results something like [false, false, false, true, false] to inducate door 4 is open.
 var checkInputs = function(num) {
   var promise = new Promise(function(resolve, reject) {
     setTimeout(function() {
@@ -119,11 +116,8 @@ var checkInputs = function(num) {
   return promise;
 };
 
-function close() {
-  client.close();
-  console.log("Connection Closed");
-}
-
+// Not sure if this is needed long term, but in case any outputs are left on
+// turn them all off prior to starting a new door open routine.
 var clearAllOutputs = function() {
   var promise = new Promise(function(resolve, reject) {
     client
@@ -160,3 +154,9 @@ var clearAllOutputs = function() {
   });
   return promise;
 };
+
+// closes connection to modbus device.  Not sure if this is necessary.
+function close() {
+  client.close();
+  console.log("Connection Closed");
+}
