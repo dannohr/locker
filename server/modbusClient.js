@@ -1,71 +1,147 @@
-const modbus = require("jsmodbus");
-const host = "10.0.0.10";
-const port = 502;
-const numCards = 3;
-
-let numInputs = 8 * numCards - 1;
+// create an empty modbus client
+var ModbusRTU = require("modbus-serial");
+var client = new ModbusRTU();
 
 module.exports = {
-  // create a modbus client
-  client: modbus.client.tcp.complete({
-    host: host,
-    port: port,
-    autoReconnect: true,
-    reconnectTimeout: 1000,
-    timeout: 5000,
-    unitId: 0
-  })
+  openDoor: num => {
+    console.log("Opening Door Number", num);
+
+    var promise = new Promise(function(resolve, reject) {
+      var response = { lockNum: num };
+      connect()
+        .then(function(result) {
+          response.connect = result;
+          return clearAllOutputs();
+        })
+        .then(function(result) {
+          //result is the value in the resolve function in clearAllOutputs()
+          response.clearAll = result;
+          return turnOn(num);
+        })
+        .then(function(result) {
+          //result is the value in the resolve function in turnOn()
+          response.onResult = result;
+          //response = { lockNum: 3, connect: true, clearAll: { address: 0, length: 24 },  onResult: { address: 3, state: true } }
+          return turnOff(num);
+        })
+        .then(function(result) {
+          //result is the value in the resolve function in turnOff()
+          response.offResult = result;
+          return checkInputs();
+        })
+        .then(function(result) {
+          //result is the value in the resolve function in checkInputs()
+          response.doorOpen = result.data;
+          resolve(response);
+        })
+        .catch(function(e) {
+          console.log(e.message);
+        });
+    });
+    return promise;
+  },
+
+  doorOpenStatus: () => {
+    var promise = new Promise(function(resolve, reject) {
+      var response = {};
+      connect()
+        .then(function(result) {
+          response.connect = result;
+          return checkInputs();
+        })
+        .then(function(result) {
+          //result is the value in the resolve function in checkInputs()
+          response.doorOpen = result.data;
+          resolve(response);
+        })
+        .catch(function(e) {
+          console.log(e.message);
+        });
+    });
+    return promise;
+  }
 };
 
-// // create a modbus client
-// var client = modbus.client.tcp.complete({
-//     host: host,
-//     port: port,
-//     autoReconnect: true,
-//     reconnectTimeout: 1000,
-//     timeout: 5000,
-//     unitId: 0
-// });
+//Connect to the Modbus Device
+var connect = function() {
+  var promise = new Promise(function(resolve, reject) {
+    // not sure why this is necessary, but seems to be, I think the close
+    // connection isn't working right and unless I set this to null it thinks
+    //it's still connected.
+    client.isOpen = null;
 
-// client.connect();
+    client
+      .connectTCP(process.env.MODBUS_IP, { port: process.env.MODBUS_PORT })
+      .then(setClient)
+      .then(function() {
+        resolve(true);
+      })
+      .catch(function(e) {
+        console.log(e.message);
+        resolve(e);
+      });
+  });
+  return promise;
+};
 
-// client.on("connect", function () {
-//     client
-//         .readDiscreteInputs(0, numInputs)
-//         .then(function (resp) {
-//             console.log(resp);
-//             for (i = 0; i < resp.coils.length; i++) {
-//                 console.log('Input ', i + 1, ' is ', resp.coils[i])
-//             }
-//         }, console.error)
-//         .finally(function () {
-//             client.close();
-//         });
-// });
+function setClient() {
+  // set the client's unit id
+  // set a timout for requests default is null (no timeout)
+  // Taken from modbus-serial documentation
+  client.setID(1);
+  client.setTimeout(100);
+}
 
-// let i = 0;
+var turnOn = function(num) {
+  var promise = new Promise(function(resolve, reject) {
+    client.writeCoil(num, true).then(function(result) {
+      resolve(result);
+    });
+  });
+  return promise;
+};
 
-// for (i; i < 8; i++) {
-//     client.writeSingleCoil(i, false).then(function (resp) {
-//         // resp will look like { fc: 5, byteCount: 4, outputAddress: 5, outputValue: true }
-//         console.log(resp);
-//     }, console.error);
-// }
+var turnOff = function(num) {
+  var promise = new Promise(function(resolve, reject) {
+    setTimeout(function() {
+      client.writeCoil(num, false).then(function(result) {
+        resolve(result);
+      });
+    }, 50);
+  });
+  return promise;
+};
 
-// // i = 0;
+// This returns the status of all inputs in an array.  Door open will be true
+// Results something like [false, false, false, true, false] to indicate door 4 is open.
+var checkInputs = function(num) {
+  var promise = new Promise(function(resolve, reject) {
+    setTimeout(function() {
+      client.readDiscreteInputs(0, 23).then(function(result) {
+        resolve(result);
+      });
+    }, 500);
+  });
+  return promise;
+};
 
-// // for (i; i < 8; i++) {
-// //   client.writeSingleCoil(i, false).then(function(resp) {
-// //     // resp will look like { fc: 5, byteCount: 4, outputAddress: 5, outputValue: true }
-// //     //console.log(resp);
-// //   }, console.error);
-// // }
+// Not sure if this is needed long term, but in case any outputs are left on
+// turn them all off prior to starting a new door open routine.
+var clearAllOutputs = function() {
+  let outputs = [];
+  for (var i = 0; i < process.env.NUM_CARDS * 8; i++) {
+    outputs.push(false);
+  }
+  var promise = new Promise(function(resolve, reject) {
+    client.writeCoils(0, outputs).then(function(result) {
+      resolve(result);
+    });
+  });
+  return promise;
+};
 
-// let num = 0;
-// // function openLock(num) {
-// console.log("Opening Locker Number ", num + 1);
-// client.writeSingleCoil(num, true).then(function (resp) {
-//     // resp will look like { fc: 5, byteCount: 4, outputAddress: 5, outputValue: true }
-//     console.log(resp);
-//     console.log("done");
-// }, console.error);
+// closes connection to modbus device.  Not sure if this is necessary.
+function close() {
+  client.close();
+  console.log("Connection Closed");
+}

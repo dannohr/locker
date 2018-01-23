@@ -4,9 +4,7 @@ const bodyParser = require("body-parser");
 require("dotenv").config();
 
 const app = express();
-const port = process.env.SERVER_PORT || 3001;
-
-require("dotenv").load();
+const port = process.env.SERVER_PORT || 5000;
 
 // Body Parser Middleware
 app.use(bodyParser.json());
@@ -27,6 +25,11 @@ const lockModbusCtrl = require("./ctrl/lockModbusCtrl.js");
 
 app.get("/api/getAllInputStatus", lockModbusCtrl.getAllInputStatus);
 app.post("/api/postOpenLock", lockModbusCtrl.postOpenLock);
+app.post("/api/postOpenLocks", lockModbusCtrl.postOpenLocks);
+app.post(
+  "/api/postOpenLockMultipleTimes",
+  lockModbusCtrl.postOpenLockMultipleTimes
+);
 
 app.get("/api/hello", (req, res) => {
   res.send({ express: "Modbus System Connected" });

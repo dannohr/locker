@@ -9,3 +9,13 @@ To start the server and client at the same time
 ```
 yarn dev
 ```
+
+To Do:
+
+1. Handle error correctly when can't connect to modbus device.
+
+2. Try lock X number of times if it didn't open
+
+3. Open multiple locks, sequentially
+
+4. Actively monitor open door status
