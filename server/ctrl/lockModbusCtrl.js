@@ -25,8 +25,10 @@ module.exports = {
       setTimeout(function() {
         console.log("Lock Number", num);
         modbus.openDoor(num).then(response => {
-          console.log(response);
+          console.log("for lock number", index);
           status.push(response);
+          console.log(status);
+          res.status(201).json(status);
         });
       }, index * 3000);
     });

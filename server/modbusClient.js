@@ -41,6 +41,36 @@ module.exports = {
     return promise;
   },
 
+  retryOpenDoor: num => {
+    //when retrying, don't need to connect and clear outputs again
+    console.log("Retrying Opening Door Number", num);
+
+    var promise = new Promise(function(resolve, reject) {
+      var response = { lockNum: num };
+      turnOn(num)
+        .then(function(result) {
+          //result is the value in the resolve function in turnOn()
+          response.onResult = result;
+          //response = { lockNum: 3, connect: true, clearAll: { address: 0, length: 24 },  onResult: { address: 3, state: true } }
+          return turnOff(num);
+        })
+        .then(function(result) {
+          //result is the value in the resolve function in turnOff()
+          response.offResult = result;
+          return checkInputs();
+        })
+        .then(function(result) {
+          //result is the value in the resolve function in checkInputs()
+          response.doorOpen = result.data;
+          resolve(response);
+        })
+        .catch(function(e) {
+          console.log(e.message);
+        });
+    });
+    return promise;
+  },
+
   doorOpenStatus: () => {
     var promise = new Promise(function(resolve, reject) {
       var response = {};
@@ -128,6 +158,7 @@ var checkInputs = function(num) {
 // Not sure if this is needed long term, but in case any outputs are left on
 // turn them all off prior to starting a new door open routine.
 var clearAllOutputs = function() {
+  //Build as array with a value of false for every output in the system
   let outputs = [];
   for (var i = 0; i < process.env.NUM_CARDS * 8; i++) {
     outputs.push(false);
