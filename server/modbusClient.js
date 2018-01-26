@@ -3,42 +3,13 @@ var ModbusRTU = require("modbus-serial");
 var client = new ModbusRTU();
 
 module.exports = {
-  openDoor: num => {
-    console.log("Opening Door Number", num);
-
-    var promise = new Promise(function(resolve, reject) {
-      var response = { lockNum: num };
-      connect()
-        .then(function(result) {
-          response.connect = result;
-          return clearAllOutputs();
-        })
-        .then(function(result) {
-          //result is the value in the resolve function in clearAllOutputs()
-          response.clearAll = result;
-          return turnOn(num);
-        })
-        .then(function(result) {
-          //result is the value in the resolve function in turnOn()
-          response.onResult = result;
-          //response = { lockNum: 3, connect: true, clearAll: { address: 0, length: 24 },  onResult: { address: 3, state: true } }
-          return turnOff(num);
-        })
-        .then(function(result) {
-          //result is the value in the resolve function in turnOff()
-          response.offResult = result;
-          return checkInputs();
-        })
-        .then(function(result) {
-          //result is the value in the resolve function in checkInputs()
-          response.doorOpen = result.data;
-          resolve(response);
-        })
-        .catch(function(e) {
-          console.log(e.message);
-        });
+  openDoorTwice: num => {
+    //var try1 =
+    openDoor(num).then(function(result) {
+      console.log(result);
     });
-    return promise;
+    //console.log("here", try1);
+    //return try1;
   },
 
   retryOpenDoor: num => {
@@ -91,6 +62,43 @@ module.exports = {
     return promise;
   }
 };
+
+function openDoor(num) {
+  console.log("Opening Door Number", num);
+  var promise = new Promise(function(resolve, reject) {
+    var response = { lockNum: num };
+    connect()
+      .then(function(result) {
+        response.connect = result;
+        return clearAllOutputs();
+      })
+      .then(function(result) {
+        //result is the value in the resolve function in clearAllOutputs()
+        response.clearAll = result;
+        return turnOn(num);
+      })
+      .then(function(result) {
+        //result is the value in the resolve function in turnOn()
+        response.onResult = result;
+        //response = { lockNum: 3, connect: true, clearAll: { address: 0, length: 24 },  onResult: { address: 3, state: true } }
+        return turnOff(num);
+      })
+      .then(function(result) {
+        //result is the value in the resolve function in turnOff()
+        response.offResult = result;
+        return checkInputs();
+      })
+      .then(function(result) {
+        //result is the value in the resolve function in checkInputs()
+        response.doorOpen = result.data;
+        resolve(response);
+      })
+      .catch(function(e) {
+        console.log(e.message);
+      });
+  });
+  return promise;
+}
 
 //Connect to the Modbus Device
 var connect = function() {

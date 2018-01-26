@@ -11,7 +11,7 @@ module.exports = {
   },
 
   postOpenLock: (req, res, next) => {
-    modbus.openDoor(req.body.lock[0]).then(response => {
+    modbus.openDoorTwice(req.body.lock[0]).then(response => {
       console.log("---------- Start of Check Door Sequence ----------");
       console.log(response);
       console.log("----------- End of Check Door Sequence -----------");
