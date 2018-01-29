@@ -29,5 +29,9 @@
   "bugs": {
     "url": "https://github.com/dannohr/locker/issues"
   },
-  "keywords": ["node", "express", "create-react-app"]
+  "keywords": [
+    "node",
+    "express",
+    "create-react-app"
+  ]
 }

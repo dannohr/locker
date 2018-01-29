@@ -3,43 +3,50 @@ var ModbusRTU = require("modbus-serial");
 var client = new ModbusRTU();
 
 module.exports = {
-  openDoorTwice: num => {
-    //var try1 =
-    openDoor(num).then(function(result) {
-      console.log(result);
-    });
-    //console.log("here", try1);
-    //return try1;
-  },
+  openDoors: async (nums, attempts) => {
+    let finalResults = [];
+    for (const num of nums) {
+      console.log(num);
+      try {
+        finalResults.push(
+          await openDoor(num).then(function(result) {
+            var promise = new Promise(function(resolve, reject) {
+              let i = 0;
+              // let finalResult = result;
+              if (result.doorOpen[num] === true) {
+                resolve(result);
+              }
+              let didDoorOpen = result.doorOpen[num];
+              console.log("First DidDoorOpen", didDoorOpen);
 
-  retryOpenDoor: num => {
-    //when retrying, don't need to connect and clear outputs again
-    console.log("Retrying Opening Door Number", num);
+              while (didDoorOpen === false && i < attempts) {
+                i++;
+                (function(j) {
+                  setTimeout(function() {
+                    console.log(j);
+                    if (didDoorOpen === false) {
+                      retryOpenDoor(num).then(function(result) {
+                        didDoorOpen = result.doorOpen[num];
+                        result.numOfTries = j;
+                        if (result.doorOpen[num] === true || j === attempts) {
+                          resolve(result);
+                        }
+                      });
+                    }
+                  }, 3000 * i);
+                })(i);
+              }
+            });
 
-    var promise = new Promise(function(resolve, reject) {
-      var response = { lockNum: num };
-      turnOn(num)
-        .then(function(result) {
-          //result is the value in the resolve function in turnOn()
-          response.onResult = result;
-          //response = { lockNum: 3, connect: true, clearAll: { address: 0, length: 24 },  onResult: { address: 3, state: true } }
-          return turnOff(num);
-        })
-        .then(function(result) {
-          //result is the value in the resolve function in turnOff()
-          response.offResult = result;
-          return checkInputs();
-        })
-        .then(function(result) {
-          //result is the value in the resolve function in checkInputs()
-          response.doorOpen = result.data;
-          resolve(response);
-        })
-        .catch(function(e) {
-          console.log(e.message);
-        });
-    });
-    return promise;
+            return promise;
+          })
+        );
+      } catch (e) {
+        console.log(e);
+        return e;
+      }
+    }
+    return finalResults;
   },
 
   doorOpenStatus: () => {
@@ -48,11 +55,13 @@ module.exports = {
       connect()
         .then(function(result) {
           response.connect = result;
+          console.log(response);
           return checkInputs();
         })
         .then(function(result) {
           //result is the value in the resolve function in checkInputs()
           response.doorOpen = result.data;
+          console.log(response);
           resolve(response);
         })
         .catch(function(e) {
@@ -62,6 +71,37 @@ module.exports = {
     return promise;
   }
 };
+
+function retryOpenDoor(num) {
+  //when retrying, don't need to connect and clear outputs again
+  console.log("Retrying Opening Door Number", num);
+
+  var promise = new Promise(function(resolve, reject) {
+    var response = { lockNum: num };
+    turnOn(num)
+      .then(function(result) {
+        //result is the value in the resolve function in turnOn()
+        response.onResult = result;
+        console.log(response);
+        //response = { lockNum: 3, connect: true, clearAll: { address: 0, length: 24 },  onResult: { address: 3, state: true } }
+        return turnOff(num);
+      })
+      .then(function(result) {
+        //result is the value in the resolve function in turnOff()
+        response.offResult = result;
+        return checkInputs();
+      })
+      .then(function(result) {
+        //result is the value in the resolve function in checkInputs()
+        response.doorOpen = result.data;
+        resolve(response);
+      })
+      .catch(function(e) {
+        console.log(e.message);
+      });
+  });
+  return promise;
+}
 
 function openDoor(num) {
   console.log("Opening Door Number", num);
@@ -95,6 +135,7 @@ function openDoor(num) {
       })
       .catch(function(e) {
         console.log(e.message);
+        reject(e);
       });
   });
   return promise;
@@ -107,16 +148,19 @@ var connect = function() {
     // connection isn't working right and unless I set this to null it thinks
     //it's still connected.
     client.isOpen = null;
-
     client
       .connectTCP(process.env.MODBUS_IP, { port: process.env.MODBUS_PORT })
       .then(setClient)
       .then(function() {
         resolve(true);
       })
-      .catch(function(e) {
-        console.log(e.message);
-        resolve(e);
+      .catch(function(error) {
+        let result = [];
+        error.connect = "false";
+        result.push(error);
+        console.log(result);
+
+        reject(result);
       });
   });
   return promise;
@@ -155,9 +199,11 @@ var turnOff = function(num) {
 var checkInputs = function(num) {
   var promise = new Promise(function(resolve, reject) {
     setTimeout(function() {
-      client.readDiscreteInputs(0, 23).then(function(result) {
-        resolve(result);
-      });
+      client
+        .readDiscreteInputs(0, process.env.NUM_CARDS * 8)
+        .then(function(result) {
+          resolve(result);
+        });
     }, 500);
   });
   return promise;

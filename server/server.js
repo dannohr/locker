@@ -25,11 +25,6 @@ const lockModbusCtrl = require("./ctrl/lockModbusCtrl.js");
 
 app.get("/api/getAllInputStatus", lockModbusCtrl.getAllInputStatus);
 app.post("/api/postOpenLock", lockModbusCtrl.postOpenLock);
-app.post("/api/postOpenLocks", lockModbusCtrl.postOpenLocks);
-app.post(
-  "/api/postOpenLockMultipleTimes",
-  lockModbusCtrl.postOpenLockMultipleTimes
-);
 
 app.get("/api/hello", (req, res) => {
   res.send({ express: "Modbus System Connected" });
