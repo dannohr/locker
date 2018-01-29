@@ -37,7 +37,6 @@ module.exports = {
                 })(i);
               }
             });
-
             return promise;
           })
         );
@@ -48,29 +47,49 @@ module.exports = {
     }
     return finalResults;
   },
+  doorOpenStatus: async () => {
+    let finalResults = [];
 
-  doorOpenStatus: () => {
-    var promise = new Promise(function(resolve, reject) {
-      var response = {};
-      connect()
-        .then(function(result) {
-          response.connect = result;
-          console.log(response);
-          return checkInputs();
+    try {
+      finalResults.push(
+        await doorStatus().then(function(result) {
+          console.log("Testing");
+          console.log(result);
+          return result;
         })
-        .then(function(result) {
-          //result is the value in the resolve function in checkInputs()
-          response.doorOpen = result.data;
-          console.log(response);
-          resolve(response);
-        })
-        .catch(function(e) {
-          console.log(e.message);
-        });
-    });
-    return promise;
+      );
+    } catch (e) {
+      console.log(e);
+      return e;
+    }
+
+    return finalResults;
   }
 };
+
+function doorStatus() {
+  var promise = new Promise(function(resolve, reject) {
+    var response = {};
+    connect()
+      .then(function(result) {
+        response.connect = result;
+        console.log(response);
+        return checkInputs();
+      })
+      .then(function(result) {
+        //result is the value in the resolve function in checkInputs()
+        response.doorOpen = result.data;
+        console.log(response);
+        resolve(response);
+      })
+      .catch(function(e) {
+        console.log("here is the catch for doorOpenStatus function");
+        console.log(e);
+        reject(e);
+      });
+  });
+  return promise;
+}
 
 function retryOpenDoor(num) {
   //when retrying, don't need to connect and clear outputs again
@@ -134,6 +153,7 @@ function openDoor(num) {
         resolve(response);
       })
       .catch(function(e) {
+        console.log("catch from open door");
         console.log(e.message);
         reject(e);
       });
@@ -158,8 +178,8 @@ var connect = function() {
         let result = [];
         error.connect = "false";
         result.push(error);
-        console.log(result);
-
+        // console.log("catch from connect function:");
+        // console.log(result);
         reject(result);
       });
   });
