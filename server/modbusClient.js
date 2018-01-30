@@ -209,7 +209,7 @@ var turnOff = function(num) {
       client.writeCoil(num, false).then(function(result) {
         resolve(result);
       });
-    }, 50);
+    }, 1000);
   });
   return promise;
 };

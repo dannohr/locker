@@ -7,6 +7,7 @@ import "./App.css";
 import MyComponent from "./components/Mycomponent";
 import Keyboard from "./components/Keyboard";
 import WalkupScreen from "./components/WalkupScreen";
+import ManuallyOpenDoors from "./components/ManuallyOpenDoors";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -25,6 +26,7 @@ class App extends Component {
               <Route exact path="/" component={WalkupScreen} />
               <Route path="/test1" component={MyComponent} />
               <Route path="/test2" component={Keyboard} />
+              <Route path="/manualdooropen" component={ManuallyOpenDoors} />
             </Switch>
           </BrowserRouter>
         </div>
