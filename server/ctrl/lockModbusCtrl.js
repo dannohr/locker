@@ -1,4 +1,5 @@
 const modbus = require("../modbusClient.js");
+//test
 
 module.exports = {
   getAllInputStatus: (req, res, next) => {
