@@ -2,7 +2,12 @@ import React from "react";
 import axios from "axios";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import RaisedButton from "material-ui/RaisedButton";
-import Redirect from "react-router-dom/Redirect";
+
+let style = { margin: 20 };
+
+function callApi() {
+  console.log("hi");
+}
 
 class ManuallyOpenDoors extends React.Component {
   constructor(props) {
@@ -10,33 +15,23 @@ class ManuallyOpenDoors extends React.Component {
 
     this.state = {
       doorStatus: [],
-      buttonColor: []
+      colors: []
     };
   }
 
   componentDidMount() {
     axios.get(`http://localhost:3001/api/getAllInputStatus`).then(res => {
-      const doorStatus = res.data;
-      let colors = []
-      for (var i = 0,  i < res.data[0].doorOpen.length; i++) {
-        colors.push(this.state.doorOpen ? "blue" : "green")
-      } 
-      this.setState({ doorStatus });
+      let doorStatus = res.data[0].doorOpen;
+      let colors = [];
+      for (var i = 0; i < doorStatus.length; i++) {
+        colors.push(doorStatus[i] ? "pink" : "green");
+      }
+      this.setState({ doorStatus, colors });
       console.log(this.state);
     });
   }
 
   render() {
-    let bgColor = this.state.doorOpen ? "blue" : "green";
-
-    let style = {
-      margin: 20,
-      backgroundColor: "#45058e",
-      secondary: true
-    };
-
-    console.log(style);
-
     return (
       <MuiThemeProvider>
         <div>
@@ -45,16 +40,44 @@ class ManuallyOpenDoors extends React.Component {
             <RaisedButton
               label="1"
               style={style}
-              backgroundColor="red"
-              onClick={() => this.callApi()}
+              backgroundColor={this.state.colors[0]}
+              onClick={() => callApi()}
             />
-            <RaisedButton label="2" style={style} />
-            <RaisedButton label="3" style={style} />
-            <RaisedButton label="4" style={style} />
-            <RaisedButton label="5" style={style} />
-            <RaisedButton label="6" style={style} />
-            <RaisedButton label="7" style={style} />
-            <RaisedButton label="8" style={style} />
+            <RaisedButton
+              label="2"
+              style={style}
+              backgroundColor={this.state.colors[1]}
+            />
+            <RaisedButton
+              label="3"
+              style={style}
+              backgroundColor={this.state.colors[2]}
+            />
+            <RaisedButton
+              label="4"
+              style={style}
+              backgroundColor={this.state.colors[3]}
+            />
+            <RaisedButton
+              label="5"
+              style={style}
+              backgroundColor={this.state.colors[4]}
+            />
+            <RaisedButton
+              label="6"
+              style={style}
+              backgroundColor={this.state.colors[5]}
+            />
+            <RaisedButton
+              label="7"
+              style={style}
+              backgroundColor={this.state.colors[6]}
+            />
+            <RaisedButton
+              label="8"
+              style={style}
+              backgroundColor={this.state.colors[8]}
+            />
           </div>
           <div>
             <RaisedButton label="9" style={style} />
