@@ -30,7 +30,7 @@ app.get("/api/getAllInputStatus", lockModbusCtrl.getAllInputStatus);
 app.post("/api/postOpenLock", lockModbusCtrl.postOpenLock);
 
 app.get("/api/hello", (req, res) => {
-  res.send({ express: "Modbus System Connected" });
+  res.send({ express: "Yep. Modbus System Connected" });
 });
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
