@@ -24,10 +24,10 @@ class App extends Component {
 
           <BrowserRouter>
             <Switch>
-              <Route exact path="/" component={WalkupScreen} />
               <Route path="/pickup" component={Pickup} />
               <Route path="/dropoff" component={DropOff} />
               <Route path="/manualdooropen" component={ManuallyOpenDoors} />
+              <Route exact path="/" component={WalkupScreen} />
             </Switch>
           </BrowserRouter>
         </div>

@@ -16,7 +16,7 @@ class Footer extends Component {
   }
 
   isLockerSystemConnected = async () => {
-    const response = await fetch("/api/getAllInputStatus");
+    const response = await fetch("http://localhost:3001/api/getAllInputStatus");
     const body = await response.json();
     // console.log(body);
     if (response.status !== 200) throw Error(body.message);
