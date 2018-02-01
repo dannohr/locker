@@ -4,7 +4,8 @@ import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import "./App.css";
 
-import MyComponent from "./components/Mycomponent";
+import Pickup from "./components/Pickup";
+import DropOff from "./components/DropOff";
 import Keyboard from "./components/Keyboard";
 import WalkupScreen from "./components/WalkupScreen";
 import ManuallyOpenDoors from "./components/ManuallyOpenDoors";
@@ -24,8 +25,8 @@ class App extends Component {
           <BrowserRouter>
             <Switch>
               <Route exact path="/" component={WalkupScreen} />
-              <Route path="/test1" component={MyComponent} />
-              <Route path="/test2" component={Keyboard} />
+              <Route path="/pickup" component={Pickup} />
+              <Route path="/dropoff" component={DropOff} />
               <Route path="/manualdooropen" component={ManuallyOpenDoors} />
             </Switch>
           </BrowserRouter>

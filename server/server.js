@@ -22,6 +22,9 @@ app.use(function(req, res, next) {
 });
 
 const lockModbusCtrl = require("./ctrl/lockModbusCtrl.js");
+const lockerCtrl = require("./ctrl/lockerCtrl.js");
+
+app.get("/api/getLockers", lockerCtrl.getAllLockers);
 
 app.get("/api/getAllInputStatus", lockModbusCtrl.getAllInputStatus);
 app.post("/api/postOpenLock", lockModbusCtrl.postOpenLock);

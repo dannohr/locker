@@ -5,16 +5,15 @@ import RaisedButton from "material-ui/RaisedButton";
 
 let style = { margin: 20 };
 
-let lockers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18];
-
 class ManuallyOpenDoors extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       doorStatus: [],
       colors: [],
-      singleMode: false,
-      selectedLocker: []
+      singleMode: true,
+      selectedLocker: [],
+      lockers: []
     };
   }
 
@@ -35,12 +34,19 @@ class ManuallyOpenDoors extends React.Component {
 
   callApi(num) {
     console.log("Opening Door", num);
+    let toOpen = [];
+    if (!Array.isArray(num)) {
+      toOpen.push(num);
+    } else {
+      toOpen = num;
+    }
     axios
-      .post(`http://localhost:3001/api/postOpenLock`, {
-        lock: [num],
-        attempts: 3
+      .post(`http://192.168.2.2:3001/api/postOpenLock`, {
+        lock: toOpen,
+        attempts: 1
       })
       .then(res => {
+        console.log(res.data);
         this.updateColors(res);
       });
   }
@@ -48,15 +54,22 @@ class ManuallyOpenDoors extends React.Component {
   setLocker(num) {
     console.log("Setting Locker", num);
     let selectedLocker = this.state.selectedLocker;
-    selectedLocker.push(num);
-    this.setState({ selectedLocker });
+    if (selectedLocker.includes(num)) {
+      selectedLocker.splice(selectedLocker.indexOf(num), 1);
+    } else {
+      selectedLocker.push(num);
+    }
 
-    console.log(this.state);
+    this.setState({ selectedLocker });
+    console.log(this.state.selectedLocker);
   }
 
   componentDidMount() {
-    axios.get(`http://localhost:3001/api/getAllInputStatus`).then(res => {
+    axios.get(`http://192.168.2.2:3001/api/getAllInputStatus`).then(res => {
       this.updateColors(res);
+    });
+    axios.get(`http://192.168.2.2:3001/api/getLockers`).then(res => {
+      this.setState({ lockers: res.data });
     });
   }
 
@@ -86,29 +99,29 @@ class ManuallyOpenDoors extends React.Component {
               label="Open Selected"
               style={style}
               onClick={e => {
-                this.handleToggleMode();
+                this.callApi(this.state.selectedLocker);
               }}
             />
           ) : null}
 
           <div>
-            {lockers.map(i => {
+            {this.state.lockers.map(i => {
               return (
                 <RaisedButton
                   className={
                     this.state.singleMode === false &&
-                    this.state.selectedLocker.includes(i)
+                    this.state.selectedLocker.includes(i.port)
                       ? "selected-locker-button"
                       : "button"
                   }
-                  key={i}
-                  label={i}
+                  key={i.port}
+                  label={i.number}
                   style={style}
-                  backgroundColor={this.state.colors[i - 1]}
+                  backgroundColor={this.state.colors[i.port]}
                   onClick={() =>
                     this.state.singleMode === true
-                      ? this.callApi(i - 1)
-                      : this.setLocker(i)
+                      ? this.callApi(i.port)
+                      : this.setLocker(i.port)
                   }
                 />
               );

@@ -13,17 +13,25 @@ class WalkupScreen extends React.Component {
 
   render() {
     return (
-      <div>
-        <MuiThemeProvider>
-          <RaisedButton label="Drop Off Package" style={style} />
-          <RaisedButton label="Retrieve Package" style={style} />
+      <MuiThemeProvider>
+        <div>
+          <RaisedButton
+            label="Drop Off Package"
+            style={style}
+            onClick={() => this.nextPath("/dropoff")}
+          />
+          <RaisedButton
+            label="Retrieve Package"
+            style={style}
+            onClick={() => this.nextPath("/pickup")}
+          />
           <RaisedButton
             label="Manually Open Doors"
             style={style}
             onClick={() => this.nextPath("/manualdooropen")}
           />
-        </MuiThemeProvider>
-      </div>
+        </div>
+      </MuiThemeProvider>
     );
   }
 }
