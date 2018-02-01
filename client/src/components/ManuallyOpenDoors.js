@@ -41,7 +41,7 @@ class ManuallyOpenDoors extends React.Component {
       toOpen = num;
     }
     axios
-      .post(`http://192.168.2.2:3001/api/postOpenLock`, {
+      .post(`http://localhost:3001/api/postOpenLock`, {
         lock: toOpen,
         attempts: 1
       })
@@ -65,10 +65,10 @@ class ManuallyOpenDoors extends React.Component {
   }
 
   componentDidMount() {
-    axios.get(`http://192.168.2.2:3001/api/getAllInputStatus`).then(res => {
+    axios.get(`http://localhost:3001/api/getAllInputStatus`).then(res => {
       this.updateColors(res);
     });
-    axios.get(`http://192.168.2.2:3001/api/getLockers`).then(res => {
+    axios.get(`http://localhost:3001/api/getLockers`).then(res => {
       this.setState({ lockers: res.data });
     });
   }
