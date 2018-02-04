@@ -6,9 +6,10 @@ import "./App.css";
 
 import Pickup from "./components/Pickup";
 import DropOff from "./components/DropOff";
-import Keyboard from "./components/Keyboard";
+// import Keyboard from "./components/Keyboard";
 import WalkupScreen from "./components/WalkupScreen";
 import ManuallyOpenDoors from "./components/ManuallyOpenDoors";
+import ModbusServerSetup from "./components/ModbusServerSetup";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -27,6 +28,7 @@ class App extends Component {
               <Route path="/pickup" component={Pickup} />
               <Route path="/dropoff" component={DropOff} />
               <Route path="/manualdooropen" component={ManuallyOpenDoors} />
+              <Route path="/modbussetup" component={ModbusServerSetup} />
               <Route exact path="/" component={WalkupScreen} />
             </Switch>
           </BrowserRouter>

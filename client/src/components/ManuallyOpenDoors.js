@@ -47,6 +47,7 @@ class ManuallyOpenDoors extends React.Component {
       })
       .then(res => {
         console.log(res.data);
+        this.setState({ lockers: res.data });
         this.updateColors(res);
       });
   }
@@ -83,7 +84,6 @@ class ManuallyOpenDoors extends React.Component {
             {this.state.singleMode
               ? "Open Single Doors"
               : "Open Multiple Doors"}
-
             <RaisedButton
               label="Toggle"
               style={style}

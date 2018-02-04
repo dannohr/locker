@@ -30,6 +30,11 @@ class WalkupScreen extends React.Component {
             style={style}
             onClick={() => this.nextPath("/manualdooropen")}
           />
+          <RaisedButton
+            label="Setup Modbus"
+            style={style}
+            onClick={() => this.nextPath("/modbussetup")}
+          />
         </div>
       </MuiThemeProvider>
     );

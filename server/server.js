@@ -23,11 +23,15 @@ app.use(function(req, res, next) {
 
 const lockModbusCtrl = require("./ctrl/lockModbusCtrl.js");
 const lockerCtrl = require("./ctrl/lockerCtrl.js");
+const databaseCtrl = require("./ctrl/databaseCtrl.js");
 
 app.get("/api/getLockers", lockerCtrl.getAllLockers);
 
 app.get("/api/getAllInputStatus", lockModbusCtrl.getAllInputStatus);
 app.post("/api/postOpenLock", lockModbusCtrl.postOpenLock);
+
+app.get("/api/modbus/getMusbusServer", databaseCtrl.getMusbusServer);
+app.post("/api/modbus/postMusbusServer", databaseCtrl.postMusbusServer);
 
 app.get("/api/hello", (req, res) => {
   res.send({ express: "Yep. Modbus System Connected" });

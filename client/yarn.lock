@@ -4261,6 +4261,10 @@ mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
 
+namor@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/namor/-/namor-1.0.1.tgz#ac879d9b6a0a71abecac12da6393e27ab35fb757"
+
 nan@^2.3.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/nan/-/nan-2.7.0.tgz#d95bf721ec877e08db276ed3fc6eb78f9083ad46"
@@ -5319,6 +5323,12 @@ react-scripts@1.0.17:
     whatwg-fetch "2.0.3"
   optionalDependencies:
     fsevents "1.1.2"
+
+react-table@^6.7.6:
+  version "6.7.6"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-6.7.6.tgz#3f9e3b308328ceb04ef93a47babefaba2619c905"
+  dependencies:
+    classnames "^2.2.5"
 
 react-touch-screen-keyboard@^0.3.2:
   version "0.3.2"
