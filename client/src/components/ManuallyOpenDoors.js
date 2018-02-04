@@ -23,6 +23,7 @@ class ManuallyOpenDoors extends React.Component {
     for (var i = 0; i < doorStatus.length; i++) {
       colors.push(doorStatus[i] ? "pink" : "#8de8aa");
     }
+    //console.log(colors);
     this.setState({ doorStatus, colors });
   }
 
@@ -46,8 +47,6 @@ class ManuallyOpenDoors extends React.Component {
         attempts: 1
       })
       .then(res => {
-        console.log(res.data);
-        this.setState({ lockers: res.data });
         this.updateColors(res);
       });
   }
@@ -60,16 +59,17 @@ class ManuallyOpenDoors extends React.Component {
     } else {
       selectedLocker.push(num);
     }
-
     this.setState({ selectedLocker });
     console.log(this.state.selectedLocker);
   }
 
   componentDidMount() {
     axios.get(`http://localhost:3001/api/getAllInputStatus`).then(res => {
+      //console.log(res);
       this.updateColors(res);
     });
     axios.get(`http://localhost:3001/api/getLockers`).then(res => {
+      //console.log(res.data);
       this.setState({ lockers: res.data });
     });
   }
