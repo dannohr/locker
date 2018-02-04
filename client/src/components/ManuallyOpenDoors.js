@@ -1,9 +1,20 @@
 import React from "react";
 import axios from "axios";
-import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-import RaisedButton from "material-ui/RaisedButton";
+// import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
+// import RaisedButton from "material-ui/RaisedButton";
 
 let style = { margin: 20 };
+
+var styleDoorOpen = {
+  margin: "20px",
+  backgroundColor: "pink"
+  // display: "inline-block"
+};
+var styleDoorClosed = {
+  margin: "20px",
+  backgroundColor: "#8de8aa"
+  // display: "inline-block"
+};
 
 class ManuallyOpenDoors extends React.Component {
   constructor(props) {
@@ -48,6 +59,7 @@ class ManuallyOpenDoors extends React.Component {
       })
       .then(res => {
         this.updateColors(res);
+        console.log(res);
       });
   }
 
@@ -60,13 +72,15 @@ class ManuallyOpenDoors extends React.Component {
       selectedLocker.push(num);
     }
     this.setState({ selectedLocker });
-    console.log(this.state.selectedLocker);
   }
 
   componentDidMount() {
     axios.get(`http://localhost:3001/api/getAllInputStatus`).then(res => {
+      let doorStatus = res.data[0].doorOpen;
+
+      this.setState({ doorStatus });
       //console.log(res);
-      this.updateColors(res);
+      //this.updateColors(res);
     });
     axios.get(`http://localhost:3001/api/getLockers`).then(res => {
       //console.log(res.data);
@@ -76,59 +90,68 @@ class ManuallyOpenDoors extends React.Component {
 
   render() {
     return (
-      <MuiThemeProvider>
-        <div>
-          <h2> Manually Open Lockers </h2>
-          <hr />
-          <div>
+      <div>
+        <h2> Manually Open Lockers </h2>
+        <div align="center">
+          <div
+            className="botton-toggle-open-mode"
+            style={style}
+            onClick={e => {
+              this.handleToggleMode();
+            }}
+          >
             {this.state.singleMode
               ? "Open Single Doors"
               : "Open Multiple Doors"}
-            <RaisedButton
-              label="Toggle"
-              style={style}
-              onClick={e => {
-                this.handleToggleMode();
-              }}
-            />
-            <hr />
           </div>
+          <p className="small-label-text">
+            Touch Button to Change to
+            {this.state.singleMode ? " Multiple " : " Single "}
+            Door Mode
+          </p>
+
+          <hr />
 
           {!this.state.singleMode ? (
-            <RaisedButton
-              label="Open Selected"
+            <div
+              className="botton-open-door"
               style={style}
               onClick={e => {
                 this.callApi(this.state.selectedLocker);
               }}
-            />
+            >
+              Open Selected Doors
+            </div>
           ) : null}
-
-          <div>
-            {this.state.lockers.map(i => {
-              return (
-                <RaisedButton
-                  className={
-                    this.state.singleMode === false &&
-                    this.state.selectedLocker.includes(i.port)
-                      ? "selected-locker-button"
-                      : "button"
-                  }
-                  key={i.port}
-                  label={i.number}
-                  style={style}
-                  backgroundColor={this.state.colors[i.port]}
-                  onClick={() =>
-                    this.state.singleMode === true
-                      ? this.callApi(i.port)
-                      : this.setLocker(i.port)
-                  }
-                />
-              );
-            })}
-          </div>
         </div>
-      </MuiThemeProvider>
+        <div>
+          {this.state.lockers.map(i => {
+            return (
+              <div
+                key={i.port}
+                className={
+                  this.state.singleMode === false &&
+                  this.state.selectedLocker.includes(i.port)
+                    ? "botton-door selected-locker-button"
+                    : "botton-door"
+                }
+                style={
+                  this.state.doorStatus[i.port] === true
+                    ? styleDoorOpen
+                    : styleDoorClosed
+                }
+                onClick={() =>
+                  this.state.singleMode === true
+                    ? this.callApi(i.port)
+                    : this.setLocker(i.port)
+                }
+              >
+                {i.number}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     );
   }
 }

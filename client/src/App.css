@@ -3,11 +3,6 @@
   --space: 2em 0;
 }
 
-.selected-locker-button {
-  border: 4px solid red !important;
-  /* background-color: #ffd699 !important; */
-}
-
 .Site {
   display: flex;
   flex-direction: column;
@@ -74,11 +69,72 @@ footer {
   color: white;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.botton-toggle-open-mode {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  width: 250px;
+  height: 50px;
+  cursor: pointer;
+  margin: 0 auto;
+  border: 0.5px solid rgb(94, 90, 90);
+  -webkit-border-radius: 40px;
+  border-radius: 35px;
+  font: normal 20px/50px "Domine Font Family", Helvetica, sans-serif;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  -o-text-overflow: clip;
+  text-overflow: clip;
+  letter-spacing: 1px;
+  background: rgb(94, 90, 90);
+}
+
+.botton-open-door {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+  width: 250px;
+  height: 50px;
+  cursor: pointer;
+  margin: 0 auto;
+  border: 0.5px solid rgb(94, 90, 90);
+  -webkit-border-radius: 40px;
+  border-radius: 35px;
+  font: normal 20px/50px "Domine Font Family", Helvetica, sans-serif;
+  color: rgb(255, 255, 255);
+  text-align: center;
+  -o-text-overflow: clip;
+  text-overflow: clip;
+  letter-spacing: 1px;
+  background: rgb(94, 90, 90);
+}
+
+.botton-door {
+  /* -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box; */
+  /* box-sizing: content-box; */
+  width: 70px;
+  height: 70px;
+  cursor: pointer;
+  margin: 0 auto;
+  border: 2px solid rgb(94, 90, 90);
+  -webkit-border-radius: 40px;
+  border-radius: 35px;
+  font: normal 20px/70px "Domine Font Family", Helvetica, sans-serif;
+  color: rgb(0, 0, 0);
+  text-align: center;
+  -o-text-overflow: clip;
+  text-overflow: clip;
+  letter-spacing: 1px;
+  display: inline-block;
+}
+
+.selected-locker-button {
+  border: 2px solid red !important;
+  /* background-color: #ffd699 !important; */
+}
+.small-label-text {
+  font: normal 12px "Domine Font Family", Helvetica, sans-serif;
+  color: rgb(0, 0, 0);
+  margin: 0 auto;
 }
