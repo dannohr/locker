@@ -52,6 +52,7 @@ class ModbusServerSetup extends React.Component {
   handleSaveButtonClick(e, original) {
     axios.post(`http://localhost:3001/api/modbus/postMusbusServer`, original);
     console.log(original);
+    console.log(this.state);
   }
 
   componentDidMount() {

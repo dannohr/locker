@@ -5,13 +5,10 @@ import "./App.css";
 
 import Pickup from "./components/Pickup";
 import DropOff from "./components/DropOff";
-// import Keyboard from "./components/Keyboard";
 import WalkupScreen from "./components/WalkupScreen";
 import ManuallyOpenDoors from "./components/ManuallyOpenDoors";
 import ModbusServerSetup from "./components/ModbusServerSetup";
 import Setup from "./components/Setup";
-// import Input from "./components/Input";
-
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 

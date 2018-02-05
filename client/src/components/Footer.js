@@ -14,7 +14,7 @@ class Footer extends Component {
     this.isLockerSystemConnected()
       .then(res =>
         this.setState({
-          response: "Connected to locker system:  " + res[0].connect.toString()
+          response: res[0].connect.toString()
         })
       )
       .catch(err => console.log(err));
@@ -24,6 +24,8 @@ class Footer extends Component {
     const response = await fetch("http://localhost:3001/api/getAllInputStatus");
     const body = await response.json();
     if (response.status !== 200) throw Error(body.message);
+    console.log("is connected");
+    console.log(body[0].connect);
     return body;
   };
 
@@ -37,7 +39,7 @@ class Footer extends Component {
           Setup
         </div>
         <div className="App-footer-status">
-          <p>{this.state.response}</p>
+          <p>Connected to locker system: {this.state.response}</p>
         </div>
       </div>
     );
