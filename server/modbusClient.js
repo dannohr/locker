@@ -165,6 +165,7 @@ function openDoor(num) {
 var connect = function() {
   var promise = new Promise(function(resolve, reject) {
     //lookup server info
+    // probaby should change this so it doesn't do it every time
     const sqlite3 = require("sqlite3").verbose();
     let db = new sqlite3.Database("./db/lockers.db");
     let modbusSQL = `SELECT * FROM modbus WHERE active = 1`;
