@@ -53,8 +53,8 @@ module.exports = {
     try {
       finalResults.push(
         await doorStatus().then(function(result) {
-          console.log("Testing");
-          console.log(result);
+          // console.log("Testing");
+          // console.log(result);
           return result;
         })
       );
@@ -73,13 +73,13 @@ function doorStatus() {
     connect()
       .then(function(result) {
         response.connect = result;
-        console.log(response);
+        // console.log(response);
         return checkInputs();
       })
       .then(function(result) {
         //result is the value in the resolve function in checkInputs()
         response.doorOpen = result.data;
-        console.log(response);
+        // console.log(response);
         resolve(response);
       })
       .catch(function(e) {
@@ -164,24 +164,34 @@ function openDoor(num) {
 //Connect to the Modbus Device
 var connect = function() {
   var promise = new Promise(function(resolve, reject) {
-    // not sure why this is necessary, but seems to be, I think the close
-    // connection isn't working right and unless I set this to null it thinks
-    //it's still connected.
-    client.isOpen = null;
-    client
-      .connectTCP(process.env.MODBUS_IP, { port: process.env.MODBUS_PORT })
-      .then(setClient)
-      .then(function() {
-        resolve(true);
-      })
-      .catch(function(error) {
-        let result = [];
-        error.connect = "false";
-        result.push(error);
-        // console.log("catch from connect function:");
-        // console.log(result);
-        reject(result);
-      });
+    //lookup server info
+    const sqlite3 = require("sqlite3").verbose();
+    let db = new sqlite3.Database("./db/lockers.db");
+    let modbusSQL = `SELECT * FROM modbus WHERE active = 1`;
+
+    db.all(modbusSQL, [], (err, rows) => {
+      if (err) {
+        throw err;
+      }
+
+      let modbusIp = rows[0].ip;
+      let modbusPort = rows[0].port;
+
+      //set null if it's still connected.
+      client.isOpen = null;
+      client
+        .connectTCP(modbusIp, modbusPort)
+        .then(setClient)
+        .then(function() {
+          resolve(true);
+        })
+        .catch(function(error) {
+          let result = [];
+          error.connect = "false";
+          result.push(error);
+          reject(result);
+        });
+    });
   });
   return promise;
 };

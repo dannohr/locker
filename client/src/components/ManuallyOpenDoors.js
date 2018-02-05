@@ -1,7 +1,5 @@
 import React from "react";
 import axios from "axios";
-// import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
-// import RaisedButton from "material-ui/RaisedButton";
 
 let style = { margin: 20 };
 

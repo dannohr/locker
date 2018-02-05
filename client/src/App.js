@@ -10,6 +10,7 @@ import WalkupScreen from "./components/WalkupScreen";
 import ManuallyOpenDoors from "./components/ManuallyOpenDoors";
 import ModbusServerSetup from "./components/ModbusServerSetup";
 import Setup from "./components/Setup";
+// import Input from "./components/Input";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -17,13 +18,12 @@ import Footer from "./components/Footer";
 class App extends Component {
   render() {
     return (
-      <div className="App Site">
-        <div className="Site-content">
-          <div className="App-header">
-            <Header />
-          </div>
-
-          <BrowserRouter>
+      <BrowserRouter>
+        <div className="App Site">
+          <div className="Site-content">
+            <div className="App-header">
+              <Header />
+            </div>
             <Switch>
               <Route path="/pickup" component={Pickup} />
               <Route path="/dropoff" component={DropOff} />
@@ -32,10 +32,10 @@ class App extends Component {
               <Route path="/setup" component={Setup} />
               <Route exact path="/" component={WalkupScreen} />
             </Switch>
-          </BrowserRouter>
+          </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
+      </BrowserRouter>
     );
   }
 }

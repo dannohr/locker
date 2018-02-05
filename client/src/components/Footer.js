@@ -43,5 +43,6 @@ class Footer extends Component {
     );
   }
 }
-// export default withRouter(Footer);
-export default Footer;
+
+export default withRouter(Footer);
+// export default Footer;

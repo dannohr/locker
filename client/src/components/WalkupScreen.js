@@ -2,6 +2,8 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 import MuiThemeProvider from "material-ui/styles/MuiThemeProvider";
 import RaisedButton from "material-ui/RaisedButton";
+
+// import Keyboard from "./Keyboard";
 const style = {
   margin: 12
 };

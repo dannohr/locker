@@ -1,5 +1,7 @@
 import React from "react";
 import { withRouter } from "react-router-dom";
+import Input from "./Input";
+import "react-touch-screen-keyboard/lib/Keyboard.css";
 
 class DropOff extends React.Component {
   nextPath(path) {
@@ -11,6 +13,7 @@ class DropOff extends React.Component {
       <div>
         <div>Drop Off Off </div>
         <div />
+        <Input />
       </div>
     );
   }

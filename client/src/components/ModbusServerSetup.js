@@ -5,6 +5,7 @@ import axios from "axios";
 // Import React Table
 import ReactTable from "react-table";
 import "react-table/react-table.css";
+import Input from "./Input";
 
 class ModbusServerSetup extends React.Component {
   constructor() {
@@ -16,6 +17,7 @@ class ModbusServerSetup extends React.Component {
   renderEditable(cellInfo) {
     return (
       <div
+        value="hi"
         style={{ backgroundColor: "#fafafa" }}
         contentEditable
         suppressContentEditableWarning
