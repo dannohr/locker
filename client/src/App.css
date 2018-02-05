@@ -46,6 +46,7 @@
 }
 .App-footer-icon {
   flex: 0 0 20%;
+  cursor: pointer;
 }
 .App-footer-status {
   text-align: right;
@@ -71,11 +72,6 @@ h1 {
 }
 p {
   margin: 0 0 20px 0;
-}
-footer {
-  background: #42a5f5;
-  color: white;
-  display: inline-block;
 }
 
 .botton-toggle-open-mode {
@@ -122,14 +118,14 @@ footer {
   /* -webkit-box-sizing: content-box;
   -moz-box-sizing: content-box; */
   /* box-sizing: content-box; */
-  width: 70px;
-  height: 70px;
+  width: 150px;
+  height: 150px;
   cursor: pointer;
   margin: 0 auto;
   border: 2px solid rgb(94, 90, 90);
   -webkit-border-radius: 40px;
   border-radius: 35px;
-  font: normal 20px/70px "Domine Font Family", Helvetica, sans-serif;
+  font: normal 50px/150px "Domine Font Family", Helvetica, sans-serif;
   color: rgb(0, 0, 0);
   text-align: center;
   -o-text-overflow: clip;
@@ -146,4 +142,8 @@ footer {
   font: normal 12px "Domine Font Family", Helvetica, sans-serif;
   color: rgb(0, 0, 0);
   margin: 0 auto;
+}
+
+.modbus-setup-table {
+  margin: 0px 50px 0px 50px;
 }

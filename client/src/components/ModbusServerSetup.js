@@ -2,10 +2,11 @@ import React from "react";
 // import { render } from "react-dom";
 import axios from "axios";
 
-// Import React Table
 import ReactTable from "react-table";
 import "react-table/react-table.css";
-import Input from "./Input";
+
+// import KeyboardedInput from "react-touch-screen-keyboard";
+// import "react-touch-screen-keyboard/lib/Keyboard.css";
 
 class ModbusServerSetup extends React.Component {
   constructor() {
@@ -17,7 +18,7 @@ class ModbusServerSetup extends React.Component {
   renderEditable(cellInfo) {
     return (
       <div
-        value="hi"
+        // value="hi"
         style={{ backgroundColor: "#fafafa" }}
         contentEditable
         suppressContentEditableWarning
@@ -65,7 +66,7 @@ class ModbusServerSetup extends React.Component {
     return (
       <div>
         <h1> Edit Modbus Server Settings </h1>
-        <div>
+        <div className="modbus-setup-table">
           <ReactTable
             data={modbusServer}
             columns={[

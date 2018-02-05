@@ -8,6 +8,8 @@
     "namor": "^1.0.1",
     "prop-types": "^15.6.0",
     "react": "^16.1.1",
+    "react-bootstrap-table": "^4.3.1",
+    "react-bootstrap-table-next": "^0.1.2",
     "react-dom": "^16.1.1",
     "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",

@@ -7,12 +7,12 @@ export default class Input extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: "test"
-      // customMapping: [
-      //   ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
-      //   ["a", "s", "d", "f", "g", "h", "j", "k", "l", "@"],
-      //   ["z", "x", "c", "v", "b", "n", "m", "."]
-      // ]
+      value: "test123",
+      customMapping: [
+        ["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
+        ["a", "s", "d", "f", "g", "h", "j", "k", "l", "@"],
+        ["z", "x", "c", "v", "b", "n", "m", "."]
+      ]
     };
     this.handleValueChange = this.handleValueChange.bind(this);
   }

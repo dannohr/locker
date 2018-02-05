@@ -72,6 +72,16 @@ class ManuallyOpenDoors extends React.Component {
     this.setState({ selectedLocker });
   }
 
+  refreshInputs() {
+    axios.get(`http://localhost:3001/api/getAllInputStatus`).then(res => {
+      let doorStatus = res.data[0].doorOpen;
+
+      this.setState({ doorStatus });
+      console.log(res);
+      //this.updateColors(res);
+    });
+  }
+
   componentDidMount() {
     axios.get(`http://localhost:3001/api/getAllInputStatus`).then(res => {
       let doorStatus = res.data[0].doorOpen;
@@ -107,6 +117,15 @@ class ManuallyOpenDoors extends React.Component {
             {this.state.singleMode ? " Multiple " : " Single "}
             Door Mode
           </p>
+          <div
+            className="botton-toggle-open-mode"
+            style={style}
+            onClick={e => {
+              this.refreshInputs();
+            }}
+          >
+            Refresh
+          </div>
 
           <hr />
 
