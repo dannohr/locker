@@ -175,23 +175,25 @@ var connect = function() {
         throw err;
       }
 
-      let modbusIp = rows[0].ip;
-      let modbusPort = rows[0].port;
+      if (rows.length === 1) {
+        let modbusIp = rows[0].ip;
+        let modbusPort = rows[0].port;
 
-      //set null if it's still connected.
-      client.isOpen = null;
-      client
-        .connectTCP(modbusIp, modbusPort)
-        .then(setClient)
-        .then(function() {
-          resolve(true);
-        })
-        .catch(function(error) {
-          let result = [];
-          error.connect = "false";
-          result.push(error);
-          reject(result);
-        });
+        //set null if it's still connected.
+        client.isOpen = null;
+        client
+          .connectTCP(modbusIp, modbusPort)
+          .then(setClient)
+          .then(function() {
+            resolve(true);
+          })
+          .catch(function(error) {
+            let result = [];
+            error.connect = "false";
+            result.push(error);
+            reject(result);
+          });
+      }
     });
   });
   return promise;
