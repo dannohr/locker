@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "dotenv": "^4.0.0",
+    "edge": "^7.10.1",
     "express": "^4.16.2",
     "modbus-serial": "^7.0.3",
     "sqlite3": "^3.1.13"
