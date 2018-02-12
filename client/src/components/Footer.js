@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+// import { store } from "redux";
+import { getStatus } from "../redux/actions/index";
 
 class Footer extends Component {
   state = {
@@ -11,6 +14,9 @@ class Footer extends Component {
   }
 
   componentDidMount() {
+    // store.dispatch(getStatus);
+    console.log("test");
+    console.log(store.getState());
     this.isLockerSystemConnected()
       .then(res =>
         this.setState({
@@ -46,5 +52,10 @@ class Footer extends Component {
   }
 }
 
-export default withRouter(Footer);
-// export default Footer;
+const mapStateToProps = state => state;
+
+export default withRouter(
+  connect(mapStateToProps, {
+    getStatus
+  })(Footer)
+);

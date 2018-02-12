@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
+import { connect } from "react-redux";
 
 import "./App.css";
 
@@ -40,4 +41,6 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => state;
+export default connect(mapStateToProps, {})(App);
+// export default App;

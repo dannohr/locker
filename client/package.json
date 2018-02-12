@@ -16,7 +16,8 @@
     "react-screen-keyboard": "^1.4.1",
     "react-scripts": "1.0.17",
     "react-table": "^6.7.6",
-    "react-touch-screen-keyboard": "^0.3.2"
+    "react-touch-screen-keyboard": "^0.3.2",
+    "redux": "^3.7.2"
   },
   "scripts": {
     "start": "react-scripts start",
