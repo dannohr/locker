@@ -16,7 +16,7 @@ class Footer extends Component {
   componentDidMount() {
     // store.dispatch(getStatus);
     console.log("test");
-    console.log(store.getState());
+    // console.log(store.getState());
     this.isLockerSystemConnected()
       .then(res =>
         this.setState({
