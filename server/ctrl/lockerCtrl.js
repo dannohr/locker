@@ -16,5 +16,26 @@ module.exports = {
       res.status(200).json(rows);
       //db.close();
     });
+  },
+  postLockerChange: (req, res, next) => {
+    console.log(req.body);
+    let db = new sqlite3.Database("./db/lockers.db");
+    let { port, number } = req.body;
+    let data = [port, number];
+    let sql = `UPDATE locker
+            SET ip = ?, port = ?, numcards = ?, active = ?
+            WHERE id = ?`;
+
+    db.run(sql, data, function(err) {
+      if (err) {
+        return console.error(err.message);
+      }
+      console.log(`Row(s) updated: ${this.changes}`);
+    });
+
+    // close the database connection
+    db.close();
+
+    res.status(200).json(req.body);
   }
 };

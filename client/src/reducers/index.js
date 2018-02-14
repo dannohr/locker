@@ -131,7 +131,8 @@ export function chooseSpaceAction(spaceId) {
 export function statusReducer(state = [{ status: "sample" }], action) {
   switch (action.type) {
     case GET_STATUS + "_FULFILLED":
-      return action.payload.data;
+      // return action.payload.data;
+      return { status: action.payload.data };
     case GET_STATUS + "_REJECTED":
       return {
         status: [],

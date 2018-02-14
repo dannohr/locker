@@ -4,10 +4,10 @@ const sqlite3 = require("sqlite3").verbose();
 let db = new sqlite3.Database("./db/lockers.db");
 
 let modbusSQL = `SELECT * FROM modbus`;
+let lockerSQL = `SELECT * FROM lockers`;
 
 module.exports = {
   getMusbusServer: (req, res, next) => {
-    console.log("here");
     let db = new sqlite3.Database("./db/lockers.db");
     db.all(modbusSQL, [], (err, rows) => {
       if (err) {
