@@ -37,7 +37,6 @@ class ModbusServerSetup extends React.Component {
     axios.get(`http://localhost:3001/api/modbus/getMusbusServer`).then(res => {
       this.setState({ modbusServer: res.data });
     });
-    console.log(this.state);
   }
 
   handleValueChange(original, val) {

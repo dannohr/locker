@@ -2,12 +2,22 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 // import { store } from "redux";
-import { getStatus } from "../redux/actions/index";
+import { getStatusAction } from "../reducers/index";
 
 class Footer extends Component {
-  state = {
-    response: ""
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      response: ""
+    };
+
+    this.props.getStatusAction();
+  }
+
+  // state = {
+  //   response: ""
+  // };
 
   nextPath(path) {
     this.props.history.push(path);
@@ -15,7 +25,7 @@ class Footer extends Component {
 
   componentDidMount() {
     // store.dispatch(getStatus);
-    console.log("test");
+    console.log(this.props);
     // console.log(store.getState());
     this.isLockerSystemConnected()
       .then(res =>
@@ -56,6 +66,6 @@ const mapStateToProps = state => state;
 
 export default withRouter(
   connect(mapStateToProps, {
-    getStatus
+    getStatusAction
   })(Footer)
 );
